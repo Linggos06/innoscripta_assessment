@@ -1,0 +1,129 @@
+import {
+  BBC_NEWS,
+  NYTIMES_NEWS,
+  GUARDIAN_NEWS,
+  BBC_NEWS_URL,
+  GUARDIAN_NEWS_URL,
+  NYTIMES_NEWS_URL,
+  NYTIMES_NEWS_SEARCH_URL,
+  BBC_NEWS_SEARCH_URL,
+} from "./constants.js";
+
+const API_KEYS = {
+  [BBC_NEWS]: `apiKey=${import.meta.env.VITE_BBCNEWS_KEY}`,
+  [GUARDIAN_NEWS]: `api-key=${import.meta.env.VITE_GUARDIAN_KEY}`,
+  [NYTIMES_NEWS]: `api-key=${import.meta.env.VITE_NYTIMES_KEY}`,
+};
+
+const topStories = {
+  [BBC_NEWS]: `${BBC_NEWS_URL}?sources=bbc-news&${API_KEYS[BBC_NEWS]}`,
+  [GUARDIAN_NEWS]: `${GUARDIAN_NEWS_URL}/search?${API_KEYS[GUARDIAN_NEWS]}`,
+  [NYTIMES_NEWS]: `${NYTIMES_NEWS_URL}/home.json?${API_KEYS[NYTIMES_NEWS]}`,
+};
+
+const allSources = [BBC_NEWS, GUARDIAN_NEWS, NYTIMES_NEWS];
+
+const generateUrl = (category, sources = {}) => {
+  const preferredSources = Object.keys(sources).filter((key) => sources[key]);
+
+  let urls;
+
+  // If preferred sources are specified, generate URLs for those sources
+  if (preferredSources.length > 0) {
+    urls = preferredSources.map((source) => ({
+      source,
+      url: topStories[source],
+    }));
+  } else {
+    // If no preferred sources, generate URLs for all available sources
+    urls = allSources.map((source) => ({ source, url: topStories[source] }));
+  }
+
+  const urlCategories = {
+    [BBC_NEWS]: `${BBC_NEWS_URL}?q=bbc&country=gb&category=${
+      category === "world" ? "general" : category
+    }&${API_KEYS[BBC_NEWS]}`,
+    [GUARDIAN_NEWS]: `${GUARDIAN_NEWS_URL}/${category}?${API_KEYS[GUARDIAN_NEWS]}`,
+    [NYTIMES_NEWS]: `${NYTIMES_NEWS_URL}/${category}.json?${API_KEYS[NYTIMES_NEWS]}`,
+  };
+
+  // If the category is not "home", replace the URLs with category-specific URLs
+  if (category !== "home") {
+    urls = urls.map(({ source, url }) => ({
+      source,
+      url: urlCategories[source],
+    }));
+  }
+  return urls;
+};
+
+const generateUrlByQuery = (query, filters = {}) => {
+  const appliedFilters = Object.keys(filters);
+
+  // If filters are applied, generate URLs based on the filters
+  if (appliedFilters.length > 0) {
+    const urls = {
+      [BBC_NEWS]: `${BBC_NEWS_SEARCH_URL}?sources=bbc-news&q=${
+        "bbc " + query + " " + filters.category
+      }${filters.timestamp ? "&from=" + filters.timestamp : ""}&${
+        API_KEYS[BBC_NEWS]
+      }`,
+      [GUARDIAN_NEWS]: `${GUARDIAN_NEWS_URL}/search?q=${query}${
+        filters.category ? "&tag=" + filters.category : ""
+      }${filters.timestamp ? "&from-date=" + filters.timestamp : ""}&${
+        API_KEYS[GUARDIAN_NEWS]
+      }`,
+      [NYTIMES_NEWS]: `${NYTIMES_NEWS_SEARCH_URL}?q=${query}${
+        filters.category
+          ? "&fq=section_name:" + "(" + filters.category + ")"
+          : ""
+      }${
+        filters.timestamp
+          ? " AND pub_date:" + "(" + filters.timestamp + ")"
+          : ""
+      }&${API_KEYS[NYTIMES_NEWS]}`,
+    };
+
+    let url;
+    let generatedUrls;
+
+    // Select the URL based on the specified source filter
+    switch (filters.source) {
+      case BBC_NEWS: {
+        url = urls[BBC_NEWS];
+        generatedUrls = [{ source: filters.source, url }];
+        break;
+      }
+      case GUARDIAN_NEWS: {
+        url = urls[GUARDIAN_NEWS];
+        generatedUrls = [{ source: filters.source, url }];
+        break;
+      }
+      case NYTIMES_NEWS: {
+        url = urls[NYTIMES_NEWS];
+        generatedUrls = [{ source: filters.source, url }];
+        break;
+      }
+      default: {
+        // If no specific source filter specified, generate URLs for all sources
+        generatedUrls = allSources.map((source) => ({
+          source,
+          url: urls[source],
+        }));
+      }
+    }
+    return generatedUrls;
+  }
+
+  // If no filters applied, generate URLs without filters
+  const urlQ = {
+    [BBC_NEWS]: `${BBC_NEWS_SEARCH_URL}?sources=bbc-news&q=${query}&${API_KEYS[BBC_NEWS]}`,
+    [GUARDIAN_NEWS]: `${GUARDIAN_NEWS_URL}/search?q=${query}&${API_KEYS[GUARDIAN_NEWS]}`,
+    [NYTIMES_NEWS]: `${NYTIMES_NEWS_SEARCH_URL}?q=${query}&${API_KEYS[NYTIMES_NEWS]}`,
+  };
+
+  const urls = allSources.map((source) => ({ source, url: urlQ[source] }));
+
+  return urls;
+};
+export { generateUrl, generateUrlByQuery };
