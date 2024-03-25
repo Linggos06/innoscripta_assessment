@@ -1,0 +1,18 @@
+.menu_container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  @media screen and (max-width: 600px) {
+    & {
+      margin-top: 10px;
+    }
+  }
+}
+.MuiTab-root.menu_tab {
+  color: #bdc1c6;
+
+  &:hover {
+    color: #729fb4;
+  }
+}
