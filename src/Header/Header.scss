@@ -1,0 +1,32 @@
+.MuiAppBar-root.appbar_container {
+  background-color: #242424;
+}
+.header_container {
+  @media screen and (max-width: 600px) {
+    & {
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    & :nth-child(2) {
+      flex-basis: 100%;
+      order: 3;
+    }
+    & :nth-child(3) {
+      order: 2;
+      padding-top: 15px;
+      padding-bottom: 15px;
+    }
+  }
+}
+
+.MuiTypography-root.logo {
+  display: "block";
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.MuiBox-root.search_container {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
