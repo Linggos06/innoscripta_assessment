@@ -1,0 +1,30 @@
+.state_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: calc(100vh - 250px);
+}
+
+.MuiCard-root.card {
+  min-width: 275px;
+  background-color: #3b3b3b;
+  color: #ffffff;
+}
+
+.MuiTypography-root.source {
+  font-size: 14px;
+  color: #b3afaf;
+}
+
+.MuiCardActions-root.card_actions {
+  justify-content: space-between;
+  padding: 8px 16px;
+}
+
+.MuiChip-root.view-story_button {
+  color: #bdc1c6;
+}
+
+.MuiTypography-root.date {
+  color: #b3afaf;
+}
