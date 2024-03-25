@@ -1,0 +1,48 @@
+$light-grey: #bdc1c6;
+$grey: rgba(228, 219, 233, 0.25);
+
+.MuiFormControl-root.control_select {
+  width: 135px;
+  & .MuiInputLabel-formControl {
+    color: rgba(228, 219, 233, 0.65);
+  }
+}
+.MuiInputBase-root.select_input {
+  color: rgba(228, 219, 233, 0.85);
+
+  & .MuiOutlinedInput-notchedOutline {
+    border-color: $grey;
+  }
+  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: $light-grey;
+  }
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: $light-grey;
+  }
+  .MuiSelect-icon {
+    color: $grey;
+  }
+}
+
+.MuiFormControl-root.date-select_input {
+  & .MuiOutlinedInput-root {
+    height: 40px;
+    color: rgba(228, 219, 233, 0.85);
+  }
+  & .MuiOutlinedInput-notchedOutline {
+    border-color: $grey;
+  }
+  & .MuiInputLabel-root {
+    top: -7px;
+  }
+  .MuiSvgIcon-root {
+    color: $grey;
+  }
+  & .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: $light-grey;
+  }
+}
+
+.MuiButton-root.filter_button {
+  height: 40px;
+}
