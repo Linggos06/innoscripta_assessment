@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import {
-  setCurrentSources,
+  setSources,
   setQuery,
   selectNews,
   fetchNews,
@@ -43,14 +43,17 @@ const initialPreferencies = {
 
 const Header = () => {
   const dispatch = useDispatch();
-  const { currentSource, query } = useSelector(selectNews);
+  const { sources, query } = useSelector(selectNews);
 
   const [value] = useDebounce(query, 300);
 
   const [open, setOpen] = useState(false);
   const [preferencies, setPreferencies] = useState(initialPreferencies);
 
-  const hasPreferencies = Object.keys(preferencies).some(
+  const hasSavedPreferencies = Object.keys(sources).some(
+    (item) => sources[item]
+  );
+  const hasCurrentPreferencies = Object.keys(preferencies).some(
     (item) => preferencies[item]
   );
 
@@ -59,7 +62,7 @@ const Header = () => {
       const url = generateUrlByQuery(value);
       dispatch(fetchNews(url));
     }
-    if (value && hasPreferencies) {
+    if (value && hasCurrentPreferencies) {
       resetPreferencies();
     }
   }, [value]);
@@ -82,19 +85,19 @@ const Header = () => {
     });
   };
   const handlePreferencies = () => {
-    if (!hasPreferencies) return;
+    if (!hasCurrentPreferencies) return;
     if (query) {
       dispatch(setQuery(""));
     }
 
-    dispatch(setCurrentSources(preferencies));
+    dispatch(setSources(preferencies));
     const urls = generateUrl("home", preferencies);
     dispatch(fetchNews(urls));
 
     toggleDrawer(false)();
   };
   const handleClearPreferencies = () => {
-    if (!hasPreferencies) return;
+    if (!hasCurrentPreferencies) return;
     resetPreferencies();
 
     const urls = generateUrl("home", initialPreferencies);
@@ -103,7 +106,7 @@ const Header = () => {
   };
   const resetPreferencies = () => {
     setPreferencies(initialPreferencies);
-    dispatch(setCurrentSources(initialPreferencies));
+    dispatch(setSources(initialPreferencies));
   };
   return (
     <AppBar className="appbar_container">
@@ -148,7 +151,7 @@ const Header = () => {
             />
             <Drawer
               open={open}
-              keepMounted={hasPreferencies}
+              keepMounted={hasSavedPreferencies}
               onClose={toggleDrawer(false)}
               anchor="right"
               SlideProps={{
@@ -165,7 +168,7 @@ const Header = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        value={currentSource[BBC_NEWS]}
+                        value={sources[BBC_NEWS]}
                         name={BBC_NEWS}
                         onChange={handleSourceChange}
                       />
@@ -175,7 +178,7 @@ const Header = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        value={currentSource.NYTIMES_NEWS}
+                        value={sources.NYTIMES_NEWS}
                         name={NYTIMES_NEWS}
                         onChange={handleSourceChange}
                       />
@@ -185,7 +188,7 @@ const Header = () => {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        value={currentSource[GUARDIAN_NEWS]}
+                        value={sources[GUARDIAN_NEWS]}
                         name={GUARDIAN_NEWS}
                         onChange={handleSourceChange}
                       />

@@ -6,7 +6,7 @@ import { BBC_NEWS, NYTIMES_NEWS, GUARDIAN_NEWS } from "../constants";
 
 const initialState = {
   news: [],
-  currentSource: {
+  sources: {
     [BBC_NEWS]: false,
     [GUARDIAN_NEWS]: false,
     [NYTIMES_NEWS]: false,
@@ -43,8 +43,8 @@ const newsSlice = createSlice({
       const mergedData = mergeData(convertedData);
       state.news = mergedData;
     },
-    setCurrentSources: (state, action) => {
-      state.currentSource = action.payload;
+    setSources: (state, action) => {
+      state.sources = action.payload;
     },
     setQuery: (state, action) => {
       state.query = action.payload;
@@ -67,6 +67,6 @@ const newsSlice = createSlice({
 });
 
 export const selectNews = (state) => state.news;
-export const { setNews, setCurrentSources, setQuery } = newsSlice.actions;
+export const { setNews, setSources, setQuery } = newsSlice.actions;
 
 export default newsSlice.reducer;

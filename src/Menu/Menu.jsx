@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchNews, selectNews, setQuery } from "../config/store/newsSlice";
 import { generateUrl } from "../config/generateUrl";
@@ -11,15 +11,21 @@ import "./Menu.scss";
 
 const Menu = () => {
   const dispatch = useDispatch();
-  const { currentSource, query } = useSelector(selectNews);
+  const { sources, query } = useSelector(selectNews);
   const [activeTab, setActiveTab] = useState("home");
+
+  useEffect(() => {
+    if (!query && activeTab !== "home") {
+      setActiveTab("home");
+    }
+  }, [query]);
 
   const handleChange = (event, value) => {
     if (query) {
       dispatch(setQuery(""));
     }
     setActiveTab(value);
-    const url = generateUrl(value, currentSource);
+    const url = generateUrl(value, sources);
     dispatch(fetchNews(url));
   };
 
